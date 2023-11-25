@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+
 public class MainPage {
 
     private final WebDriver webDriver;
@@ -16,6 +17,7 @@ public class MainPage {
         this.webDriver = webDriver;
         this.webDriverWait = new WebDriverWait(webDriver,3);
     }
+    private String questionButtonNum;
 
     private By orderButtonTopPageLocator = By.className("Button_Button__ra12g");
     private By orderButtonDownPageLocator = By.xpath("//*[@class='Button_Button__ra12g Button_Middle__1CSJM']");
@@ -74,6 +76,24 @@ public class MainPage {
         buttonYa.click();
     }
 
+    public void scrollToHeaderQuestionsAboutImportant() {
+        new WebDriverWait(webDriver, 3)
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[text()='Вопросы о важном']")));
+        WebElement questionsHeader = webDriver.findElement(By.xpath("//*[text()='Вопросы о важном']"));
+        ((JavascriptExecutor) webDriver).executeScript("arguments[0].scrollIntoView();", questionsHeader);
+    }
+
+    public void clickQuestion(String questionButtonNum) {
+        WebElement buttonImportantQuestion = webDriver.findElement(By.xpath("//*[@id='accordion__heading-" + questionButtonNum + "']"));
+        buttonImportantQuestion.click();
+        new WebDriverWait(webDriver, 3)
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='accordion__panel-" + questionButtonNum + "']")));
+    }
+
+    public String getAnswerTextToAQuestion(String questionButtonNum) {
+        WebElement buttonAnswerToAQuestion = webDriver.findElement(By.xpath("//*[@id='accordion__panel-" + questionButtonNum + "']"));
+        return buttonAnswerToAQuestion.getText();
+    }
 
 
 

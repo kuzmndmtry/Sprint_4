@@ -22,7 +22,6 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class TestOrderScooter {
 
     private WebDriver webDriver;
-    private String browser;
     private String orderButtonLocate;
     private String clientName;
     private String clientSurname;
@@ -34,8 +33,7 @@ public class TestOrderScooter {
     private String clientColor;
     private String clientCommentForTheCourier;
 
-    public TestOrderScooter(String browser, String orderButtonLocate, String clientName, String clientSurname, String clientAddress, String clientMetroStation, String clientPhoneNumber, String clientDeliveryTime, String clientRentalPeriod, String clientColor, String clientCommentForTheCourier) {
-        this.browser = browser;
+    public TestOrderScooter(String orderButtonLocate, String clientName, String clientSurname, String clientAddress, String clientMetroStation, String clientPhoneNumber, String clientDeliveryTime, String clientRentalPeriod, String clientColor, String clientCommentForTheCourier) {
         this.orderButtonLocate = orderButtonLocate;
         this.clientName = clientName;
         this.clientSurname = clientSurname;
@@ -51,29 +49,29 @@ public class TestOrderScooter {
     @Parameterized.Parameters
     public static Object[][] testData() {
         return new Object[][]{
-                {"chrome", "up", "Петр", "Петров", "Кольцевая Улица,16", "Бульвар Рокоссовского", "89051234567", "19.12.2023", "двое суток", "чёрный жемчуг", "без комментариев"},
-                {"chrome", "down", "Иван", "Иванов", "Волгоградский просп., 139", "Печатники", "+79159876543", "19.12.2023", "трое суток", "серая безысходность", ""},
-//                {"firefox", "up", "Петр", "Петров", "Кольцевая Улица,16", "Бульвар Рокоссовского", "89051234567", "19.12.2023", "двое суток", "чёрный жемчуг", "без комментариев"},
-//                {"firefox", "down", "Иван", "Иванов", "Волгоградский просп., 139 ", "Печатники", "+79159876543","19.12.2023", "трое суток", "серая безысходность", ""},
+                {"up", "Петр", "Петров", "Кольцевая Улица,16", "Бульвар Рокоссовского", "89051234567", "19.12.2023", "двое суток", "чёрный жемчуг", "без комментариев"},
+                {"down", "Иван", "Иванов", "Волгоградский просп., 139", "Печатники", "+79159876543", "19.12.2023", "трое суток", "серая безысходность", ""},
         };
     }
 
     @Before
     public void setup() {
-        switch (browser) {
+        switch (System.getProperty("browser")) {
             case "firefox":
                 WebDriverManager.firefoxdriver().clearDriverCache().clearResolutionCache().setup();
+                System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
                 webDriver = new FirefoxDriver();
                 break;
             case "chrome":
             default:
                 WebDriverManager.chromedriver().setup();
+                System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver.exe");
                 webDriver = new ChromeDriver();
         }
     }
 
     @Test
-    public void TestOrderScooter() {
+    public void testOrderScooter() {
 
         MainPage mainPage = new MainPage(webDriver);
         mainPage.openMainPage();

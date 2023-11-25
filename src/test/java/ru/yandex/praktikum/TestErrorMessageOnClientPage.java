@@ -9,6 +9,7 @@ import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
 
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 //Проверить ошибки для всех полей формы заказа.
 
@@ -37,12 +38,23 @@ public class TestErrorMessageOnClientPage {
 
     @Before
     public void setup() {
-        WebDriverManager.chromedriver().setup();
-        webDriver = new ChromeDriver();
+        switch (System.getProperty("browser")) {
+            case "firefox":
+                WebDriverManager.firefoxdriver().clearDriverCache().clearResolutionCache().setup();
+                System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
+                webDriver = new FirefoxDriver();
+                break;
+            case "chrome":
+            default:
+                WebDriverManager.chromedriver().setup();
+                System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver.exe");
+                webDriver = new ChromeDriver();
+        }
     }
 
+
     @Test
-    public void TestErrorMessageOnClientPage() {
+    public void testErrorMessageOnClientPage() {
 
         MainPage mainPage = new MainPage(webDriver);
         mainPage.openMainPage();

@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 //Проверить: если нажать на логотип Яндекса, в новом окне откроется главная страница Яндекса.
 
@@ -15,13 +16,23 @@ public class TestClickYandexButton {
 
     @Before
     public void setup() {
-        WebDriverManager.chromedriver().setup();
-        webDriver = new ChromeDriver();
+        switch (System.getProperty("browser")) {
+            case "firefox":
+                WebDriverManager.firefoxdriver().clearDriverCache().clearResolutionCache().setup();
+                System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
+                webDriver = new FirefoxDriver();
+                break;
+            case "chrome":
+            default:
+                WebDriverManager.chromedriver().setup();
+                System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver.exe");
+                webDriver = new ChromeDriver();
+        }
     }
 
 
     @Test
-    public void TestClickYandexButton() {
+    public void testClickYandexButton() {
         MainPage mainPage = new MainPage(webDriver);
         mainPage.openMainPage();
         mainPage.clickButtonYa();

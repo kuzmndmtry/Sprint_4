@@ -21,7 +21,8 @@ public class ClientPage {
     private By phoneNumberErrorMessageLocator = By.xpath("//*[text()='Введите корректный номер']");
     private By metroStationLocator = By.xpath("//input[@placeholder='* Станция метро']");
     private By metroStationErrorMessageLocator = By.xpath("//div[text()='Выберите станцию']");
-    private By nextButtonLocator = By.xpath("//*[@class='Button_Button__ra12g Button_Middle__1CSJM'  and text()='Далее']");
+    private By nextButtonLocator = By.xpath("//button[text()='Далее']");
+
 
     public ClientPage(WebDriver webDriver) {
         this.webDriver = webDriver;

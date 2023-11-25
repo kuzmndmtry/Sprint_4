@@ -11,6 +11,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.JavascriptExecutor;
@@ -24,6 +25,7 @@ public class TestImportantQuestions {
     private WebDriver webDriver;
     private String questionButtonNum;
     private String expectedAnswerText;
+    private String actualAnswerText;
 
     public TestImportantQuestions(String questionButtonNum, String expectedAnswerText) {
         this.questionButtonNum = questionButtonNum;
@@ -46,25 +48,29 @@ public class TestImportantQuestions {
 
     @Before
     public void setup() {
-        WebDriverManager.chromedriver().setup();
-        webDriver = new ChromeDriver();
+        switch (System.getProperty("browser")) {
+            case "firefox":
+                WebDriverManager.firefoxdriver().clearDriverCache().clearResolutionCache().setup();
+                System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
+                webDriver = new FirefoxDriver();
+                break;
+            case "chrome":
+            default:
+                WebDriverManager.chromedriver().setup();
+                System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver.exe");
+                webDriver = new ChromeDriver();
+        }
     }
 
+
     @Test
-    public void TestImportantQuestions() {
+    public void testImportantQuestions() {
 
         MainPage mainPage = new MainPage(webDriver);
         mainPage.openMainPage();
-
-        new WebDriverWait(webDriver, 3)
-                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[text()='Вопросы о важном']")));
-        WebElement questionsHeader = webDriver.findElement(By.xpath("//*[text()='Вопросы о важном']"));
-        ((JavascriptExecutor) webDriver).executeScript("arguments[0].scrollIntoView();", questionsHeader);
-
-        webDriver.findElement(By.xpath("//*[@id='accordion__heading-" + questionButtonNum + "']")).click();
-        new WebDriverWait(webDriver, 3)
-                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='accordion__panel-" + questionButtonNum + "']")));
-        Assert.assertEquals(expectedAnswerText, webDriver.findElement(By.xpath("//*[@id='accordion__panel-" + questionButtonNum + "']")).getText());
+        mainPage.scrollToHeaderQuestionsAboutImportant();
+        mainPage.clickQuestion(questionButtonNum);
+        Assert.assertEquals(expectedAnswerText, mainPage.getAnswerTextToAQuestion(questionButtonNum));
 
     }
 
